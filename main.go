@@ -32,18 +32,29 @@ func main() {
 
 	h1 := func(w http.ResponseWriter, r *http.Request) {
 
-		for k, v := range r.URL.Query() {
-			if k == "url" {
-				url := v[0]
-				key := genRandom(20)
-				db[key] = url
-				io.WriteString(w, fmt.Sprintf("log  --> %s\n", db))
-				io.WriteString(w, fmt.Sprintf("%s --> %s\n", key, url))
-			}
-		}
+        for k, v := range r.URL.Query() {
+            if k == "url"{
+                url := v[0]
+                key := genRandom(20)
+                db[key] = url
+                io.WriteString(w, fmt.Sprintf("log  --> %s\n", db))
+                io.WriteString(w, fmt.Sprintf("%s --> %s\n", key, url))
+            }
+        }
 	}
 
-	http.HandleFunc("/", h1)
+	redirect := func(w http.ResponseWriter, r *http.Request) {
+
+        // redirect /<key> to original URL
+        key := r.URL.Path
+        key = strings.Replace(key, "/", "", -1)
+        url := db[key]
+
+        io.WriteString(w, fmt.Sprintf("accessed path: %s url: %s\n", key, url))
+    }
+
+	http.HandleFunc("/sort", h1)
+	http.HandleFunc("/", redirect)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
