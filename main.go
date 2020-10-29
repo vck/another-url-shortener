@@ -28,10 +28,19 @@ func genRandom(n int) string {
 }
 
 func main() {
-	//db := make(map[string]string)
+	db := make(map[string]string)
 
-	h1 := func(w http.ResponseWriter, _ *http.Request) {
-		io.WriteString(w, fmt.Sprintf("%s\n", genRandom(200)))
+	h1 := func(w http.ResponseWriter, r *http.Request) {
+
+        for k, v := range r.URL.Query() {
+            if k == "url"{
+                url := v[0]
+                key := genRandom(20)
+                db[key] = url
+                io.WriteString(w, fmt.Sprintf("log  --> %s\n", db))
+                io.WriteString(w, fmt.Sprintf("%s --> %s\n", key, url))
+            }
+        }
 	}
 
 	http.HandleFunc("/", h1)
