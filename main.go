@@ -32,15 +32,15 @@ func main() {
 
 	h1 := func(w http.ResponseWriter, r *http.Request) {
 
-        for k, v := range r.URL.Query() {
-            if k == "url"{
-                url := v[0]
-                key := genRandom(20)
-                db[key] = url
-                io.WriteString(w, fmt.Sprintf("log  --> %s\n", db))
-                io.WriteString(w, fmt.Sprintf("%s --> %s\n", key, url))
-            }
-        }
+		for k, v := range r.URL.Query() {
+			if k == "url" {
+				url := v[0]
+				key := genRandom(20)
+				db[key] = url
+				io.WriteString(w, fmt.Sprintf("log  --> %s\n", db))
+				io.WriteString(w, fmt.Sprintf("%s --> %s\n", key, url))
+			}
+		}
 	}
 
 	http.HandleFunc("/", h1)
