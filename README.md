@@ -25,6 +25,7 @@ exist, otherwise build empty dictionary to use.
 
 # Todo
 
+- Add benchmark for sorting algorithm
 - Redirect still not working [BUG]
 - Write db into a file [FEATURE]
 - Lookup from filedb [FEATURE]
