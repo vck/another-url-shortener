@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+    "html/template"
 )
 
 func genRandom(n int) string {
@@ -36,7 +37,7 @@ func main() {
 	}
 	db := make(map[string]string)
 
-	h1 := func(w http.ResponseWriter, r *http.Request) {
+	shortenerHandler := func(w http.ResponseWriter, r *http.Request) {
 
 		for k, v := range r.URL.Query() {
 			if k == "url" {
@@ -49,7 +50,7 @@ func main() {
 		}
 	}
 
-	redirect := func(w http.ResponseWriter, r *http.Request) {
+	redirectorHandler := func(w http.ResponseWriter, r *http.Request) {
 
 		// redirect /<key> to original URL
 		key := r.URL.Path
@@ -59,8 +60,15 @@ func main() {
 		io.WriteString(w, fmt.Sprintf("accessed path: %s url: %s\n", key, url))
 	}
 
-	http.HandleFunc("/sort", h1)
-	http.HandleFunc("/", redirect)
+	indexpageHandler := func(w http.ResponseWriter, r *http.Request) {
+        tmpl, _ := template.ParseFiles("template/index.html")
+
+        tmpl.Execute(w, "")
+    }
+
+	http.HandleFunc("/sort", shortenerHandler)
+	http.HandleFunc("/red", redirectorHandler)
+	http.HandleFunc("/", indexpageHandler)
 
 	log.Println("Start and Running at Port", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
